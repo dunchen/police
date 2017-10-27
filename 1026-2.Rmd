@@ -1,0 +1,69 @@
+
+```{r}
+# Calling package dplyr
+library(dplyr)
+# Don't delete this chunk if you are using the DataComputing package
+library(DataComputing)
+library(mosaic)
+```
+
+```{r}
+main_n <- main[-c(4,6,7,8,11,13,17)]
+```
+
+```{r}
+car_accident <-
+  main_n %>%
+  filter(INCIDENT_TYPE_DESC == "AUTO ACCIDENT - NO I" | INCIDENT_TYPE_DESC =="AUTO CRASH INTO BUIL" | INCIDENT_TYPE_DESC == "AUTO ACCIDENT INJURI") %>%
+  mutate(INCIDENT_TYPE_DESC = "car_accident")
+
+shooting <-
+  main_n %>%
+  filter(INCIDENT_TYPE_DESC == "SHOTS FIRED" | INCIDENT_TYPE_DESC =="SHOOTING ALREADY OCC") %>%
+  mutate(INCIDENT_TYPE_DESC = "shooting")
+
+theft.pro <-
+  main_n %>%
+  filter(INCIDENT_TYPE_DESC == "THEFT REPORT" | INCIDENT_TYPE_DESC =="NON-RESIDENTIAL BURG" | INCIDENT_TYPE_DESC == "THEFT J/O OR IN PROGRESS" | INCIDENT_TYPE_DESC =="THEFT IN PROG/JO") %>%
+  mutate(INCIDENT_TYPE_DESC = "theft.pro")
+
+bulglar <-
+  main_n %>%
+  filter(INCIDENT_TYPE_DESC == "ROBBERY REPORT" | INCIDENT_TYPE_DESC =="ROBBERY WITH INJURIE" | INCIDENT_TYPE_DESC == "ROBBERY W INJ POL ON" | INCIDENT_TYPE_DESC =="BURGLARY/INTRUSION A" | INCIDENT_TYPE_DESC =="RESIDENTIAL BURGLAR") %>%
+  mutate(INCIDENT_TYPE_DESC = "bulglar")
+```
+
+```{r}
+main_nn <- # the data set with only four kinds of incidents: car accident, shooting, theft in progress, and bulglar, others are labeled NA
+  main_n %>%
+  mutate(INCIDENT_TYPE_DESC = derivedFactor(
+     "car_accident" = (INCIDENT_TYPE_DESC == "AUTO ACCIDENT - NO I" | INCIDENT_TYPE_DESC =="AUTO CRASH INTO BUIL" | INCIDENT_TYPE_DESC == "AUTO ACCIDENT INJURI"),
+     "shooting" = (INCIDENT_TYPE_DESC == "SHOTS FIRED" | INCIDENT_TYPE_DESC =="SHOOTING ALREADY OCC"),
+     "theft_pro" = (INCIDENT_TYPE_DESC == "THEFT REPORT" | INCIDENT_TYPE_DESC =="NON-RESIDENTIAL BURG" | INCIDENT_TYPE_DESC == "THEFT J/O OR IN PROGRESS" | INCIDENT_TYPE_DESC =="THEFT IN PROG/JO"),
+     "bulglar" = (INCIDENT_TYPE_DESC == "ROBBERY REPORT" | INCIDENT_TYPE_DESC =="ROBBERY WITH INJURIE" | INCIDENT_TYPE_DESC == "ROBBERY W INJ POL ON" | INCIDENT_TYPE_DESC =="BURGLARY/INTRUSION A" | INCIDENT_TYPE_DESC =="RESIDENTIAL BURGLAR"),
+     .method = "first",
+     .default = NA
+     ))
+```
+
+
+```{r}
+four_incid <-
+  # the data set with only four kinds of incidents: car accident, shooting, theft in progress, and bulglar
+  main_nn %>%
+  filter(!is.na(INCIDENT_TYPE_DESC))
+```
+
+
+```{r}
+summary(main_n)
+```
+```{r}
+loc <- four_incid %>%
+  filter(!is.na(LATITUDE_X) & !is.na(LONGITUDE_X))
+```
+
+```{r}
+names(loc)
+```
+
