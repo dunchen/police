@@ -10,6 +10,13 @@ import matplotlib.pyplot as plt
 from sklearn import svm
 import random
 
+random.seed()
+num=3000
+x_dim=100
+h_dim=100
+h2_dim=50
+h3_dim=25
+
 pred_loss =nn.MSELoss()
 stop_loss=nn.CrossEntropy()
 
@@ -105,7 +112,7 @@ ystop=stopsign()
 pred_optimizer=optim.LBFGS(model.parameters(),lr=0.8)
 stop_optimizer=optim.Adam(ystop.parameters(),lr=1e-3)
 
-for i in range(num)
+for i in range(num):
 	out,outs,outsy,size=model(inputx[i])
 	trainstopsign(outs,outsy,size,inputy[i])
         trainpred(out,y[i])
