@@ -29,7 +29,7 @@ class stopsign(nn.Module):
         self.relu=nn.ReLU()
         self.softmax()=nn.Softmax()     
     
-    def forward(self,x)
+    def forward(self,x):
         ht=self.relu(self.fc1(x))
         ht2=self.relu(self.fc2(ht))
         ht3=self.softmax(self.relu(self.fc3(ht2)))
@@ -57,13 +57,13 @@ class Sequence(nn.Module):
 
         for j in range(30):
             h_t, c_t = self.lstm(x[i+j], (h_t, c_t))
-            y=ystop([h_t]+[x[i+1]])
+            y=ystop(torch.cat((h_t.data,x[i+1].data))
             outputs+= [h_t]
             outputsy+= [y]
 
         return outh,outputs,outputsy,i+29
 
-def trainstopsign(outputs,outputsy,size,target)
+def trainstopsign(outputs,outputsy,size,target):
     minx=9999
     minloss=9999
     for i in range(size):
@@ -89,7 +89,7 @@ def trainstopsign(outputs,outputsy,size,target)
             stop_optimizer.step()
     return
 
-def trainpred(out,target)
+def trainpred(out,target):
     loss=pred_loss(out,target)
     loss.backward()
     pred_optimizer.step()
