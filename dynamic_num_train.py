@@ -79,7 +79,7 @@ class Sequence(nn.Module):
             h_t, c_t = self.lstm(inputx[x-i-1], (h_t, c_t))
             y=ystop(torch.cat((h_t,inputx[x-i-1].view(1,150)),1))
             outputs = outputs+ [h_t]
-            outputsy =outputsy+ [y]
+            #outputsy =outputsy+ [y]
             i=i+1
             outh=h_t
             if (random.random()>y[0][0].data).numpy(): break
@@ -87,12 +87,12 @@ class Sequence(nn.Module):
         for j in range(min(3,35-x)):
             h_t, c_t = self.lstm(inputx[x-i-1-j], (h_t, c_t))
             y=ystop(torch.cat((h_t,inputx[x-i-1-j].view(1,150)),1))
-            outputs=outputs+ [h_t[0]]
-            outputsy=outputsy+ [y]
+            outputs=outputs+ [h_t]
+            #outputsy=outputsy+ [y]
         
         return outh,outputs,outputsy,i+min(3,35-x)
 
-def trainstopsign(outputs,outputsy,size,target):
+def trainstopsign(x,outputs,size,target):
     minx=9999
     minloss=Variable(torch.FloatTensor([9999]))
     for i in range(size):
@@ -100,21 +100,21 @@ def trainstopsign(outputs,outputsy,size,target):
         if (loss.data<minloss.data).numpy():
             minloss=loss
             minx=i
-    p1=Variable(torch.LongTensor([0]))
-    p2=Variable(torch.LongTensor([1]))
 
     for i in range(size):
+        #p1=Variable(torch.LongTensor([0]),requires_grad=False)
+        #p2=Variable(torch.LongTensor([1]),requires_grad=False)
+        y=ystop(torch.cat((outputs[i],inputx[x-i-1].view(1,150)),1))
         if minx<i:
-            stop_optimizer.zero_grad()
-            loss=stop_loss(outputsy[i],p1)
+            loss=stop_loss(y,Variable(torch.LongTensor([0]),requires_grad=False))
             loss.backward()
             stop_optimizer.step()
             stop_optimizer.zero_grad()
         else:
-            stop_optimizer.zero_grad()
-            loss=stop_loss(outputsy[i],p2)
+            loss=stop_loss(y,Variable(torch.LongTensor([1]),requires_grad=False))
             loss.backward()
             stop_optimizer.step()
+            stop_optimizer.zero_grad()
     return
 
 
@@ -122,6 +122,7 @@ def trainpred(out,target):
     loss=pred_loss(out,target)
     loss.backward()
     pred_optimizer.step()
+    pred_optimizer.zero_grad()
     return
 
 '''
@@ -152,9 +153,9 @@ for i in range(1000):
 	if not(t % 7):
 		pred_optimizer.zero_grad()
 		stop_optimizer.zero_grad()
-		out,outs,outsy,size=model(t)
+		out,outs,outy,size=model(t)
 		trainpred(out,inputx[t])
-		trainstopsign(outs,outsy,size,inputx[t])
+		trainstopsign(t,outs,size,inputx[t])
 
 x=pred_loss(model(35),inputx[35])
 for i in range(35): x=x+pred_loss(model(i),inputx[i])
