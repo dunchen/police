@@ -25,7 +25,6 @@ pred_loss =nn.MSELoss()
 
 fil=pd.read_csv('all_type_150_count_d_reg.csv')
 n=41582-2
-num=46-9
 day=0
 temp_time=20141001
 for i in range(n):
@@ -41,7 +40,67 @@ for i in range(n):
 		inputx[day][reg2]=count/(count+1)
 inputx=Variable(torch.FloatTensor(inputx),requires_grad=False).cuda()
 
-#print(inputx[34])
+
+
+class Sequence(nn.Module):
+    def __init__(self):
+        super(Sequence, self).__init__()
+        self.lstm = nn.LSTMCell(x_dim,h_dim)
+
+    def forward(self, x):
+        #outputs,outputsy = []
+        h_t = Variable(torch.zeros(1,h_dim), requires_grad=False).cuda()
+        c_t = Variable(torch.zeros(1,h_dim), requires_grad=False).cuda()
+
+
+        for i in range(10):
+            h_t, c_t = self.lstm(inputx[x-(10-i)].cuda(), (h_t, c_t))
+        return h_t
+        
+
+def trainpred(out,target):
+    loss=pred_loss(out,target)
+    loss.backward()
+    pred_optimizer.step()
+    return
+
+
+model=Sequence().cuda()
+pred_optimizer=optim.SGD(model.parameters(),lr=0.1)
+
+
+x=pred_loss(model(day-1),inputx[day-1]).data[0]
+for i in range(day-11): x=x+pred_loss(model(i+10),inputx[i+10]).data[0]
+print(x/(day-10))
+
+xt=pred_loss(model(13),inputx[13]).data[0]
+for i in range(day): 
+	if (i%13)==0: xt=xt+pred_loss(model(i),inputx[i]).data[0]
+print(xt/(day/13))
+
+
+for i in range(30000):
+	t=random.randint(10,day)
+	if not((t % 13)==0):
+		out=model(t)
+		pred_optimizer.zero_grad()
+		trainpred(out,inputx[t])
+
+
+
+
+x=pred_loss(model(day-1),inputx[day-1]).data[0]
+for i in range(day-11): x=x+pred_loss(model(i+10),inputx[i+10]).data[0]
+print(x/(day-10))
+
+x=pred_loss(model(13),inputx[13]).data[0]
+for i in range(day): 
+	if (i%13)==0: x=x+pred_loss(model(i),inputx[i]).data[0]
+print(x/(day/13))
+
+
+
+
 
 
 '''
@@ -59,26 +118,17 @@ class stopsign(nn.Module):
         ht2=self.relu(self.fc2(ht))
         ht3=self.softmax(self.relu(self.fc3(ht2)))
         return ht3
-'''
-
-class Sequence(nn.Module):
-    def __init__(self):
-        super(Sequence, self).__init__()
-        self.lstm = nn.LSTMCell(x_dim,h_dim)
-
-    def forward(self, x):
-        #outputs,outputsy = []
-        h_t = Variable(torch.zeros(1,h_dim), requires_grad=False).cuda()
-        c_t = Variable(torch.zeros(1,h_dim), requires_grad=False).cuda()
 
 
-        for i in range(10):
-            h_t, c_t = self.lstm(inputx[x-(10-i)].cuda(), (h_t, c_t))
-        return h_t
-        
-'''        
+------------------------------------
+		out,outs,outsy,size=model(inputx[i])
+		trainstopsign(outs,outsy,size,inputy[i])
+        	trainpred(out,y[i])
+
+---------------------------------
+
         y=0
-        i=0      
+        i=0
         while random.random()>y[0]:
             h_t, c_t = self.lstm(x[i], (h_t, c_t))
             y=ystop(torch.cat((h_t.data,x[i+1].data))
@@ -94,9 +144,8 @@ class Sequence(nn.Module):
             outputsy+= [y]
 
         return outh,outputs,outputsy,i+29
-'''
 
-'''
+--------------------------------------------
 def trainstopsign(outputs,outputsy,size,target):
     minx=9999
     minloss=9999
@@ -123,71 +172,4 @@ def trainstopsign(outputs,outputsy,size,target):
             stop_optimizer.step()
     return
 '''
-
-def trainpred(out,target):
-    loss=pred_loss(out,target)
-    loss.backward()
-    pred_optimizer.step()
-    return
-
-'''
-def svm_label(outputs,size,target):
-    label=[]
-    loss=criterion(outputs[0],target)
-    for i in range(size-1):
-        losst=criterion(outputs[i+1],target)
-        if loss>losst:
-            label=+[1]
-        else:
-            label=+[0]
-    return label
-'''    
-
-model=Sequence().cuda()
-#ystop=stopsign()
-pred_optimizer=optim.SGD(model.parameters(),lr=0.1)
-#stop_optimizer=optim.Adam(ystop.parameters(),lr=1e-3)
-
-
-x=pred_loss(model(day-1),inputx[day-1]).data[0]
-for i in range(day-11): x=x+pred_loss(model(i+10),inputx[i+10]).data[0]
-print(x/(day-10))
-
-xt=pred_loss(model(13),inputx[13]).data[0]
-for i in range(day): 
-	if (i%13)==0: xt=xt+pred_loss(model(i),inputx[i]).data[0]
-print(xt/(day/13))
-
-
-for i in range(30000):
-	t=random.randint(10,day)
-	if not((t % 13)==0):
-		out=model(t)
-		pred_optimizer.zero_grad()
-		trainpred(out,inputx[t])
-		#print("loss")
-		#for j in range(4):
-			#print(model((j+1)*7))
-			#print(inputx[(j+1)*7])
-
-
-
-
-x=pred_loss(model(day-1),inputx[day-1]).data[0]
-for i in range(day-11): x=x+pred_loss(model(i+10),inputx[i+10]).data[0]
-print(x/(day-10))
-
-x=pred_loss(model(13),inputx[13]).data[0]
-for i in range(day): 
-	if (i%13)==0: x=x+pred_loss(model(i),inputx[i]).data[0]
-print(x/(day/13))
-
-'''
-		out,outs,outsy,size=model(inputx[i])
-		trainstopsign(outs,outsy,size,inputy[i])
-        	trainpred(out,y[i])
-'''
-
-
-
 
