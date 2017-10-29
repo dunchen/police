@@ -37,7 +37,10 @@ for i in range(n):
 		reg2=reg.astype(int)
 		count=np.asscalar(fil.ix[i+2,3])
 		#print(mon-10,reg2,count)
-		inputx[day][reg2]=count/(count+1)
+		if count<200: 
+			inputx[day][reg2]=count/200
+		else:
+			inputx[day][reg2]=1
 inputx=Variable(torch.FloatTensor(inputx),requires_grad=False).cuda()
 
 
@@ -74,9 +77,13 @@ for i in range(day-11): x=x+pred_loss(model(i+10),inputx[i+10]).data[0]
 print(x/(day-10))
 
 xt=pred_loss(model(13),inputx[13]).data[0]
+mean=inputx[13]
 for i in range(day): 
-	if (i%13)==0: xt=xt+pred_loss(model(i),inputx[i]).data[0]
+	if (i%13)==0: 
+		xt=xt+pred_loss(model(i),inputx[i]).data[0]
+		mean=mean+inputx[i]
 print(xt/(day/13))
+mean=mean/(day/13)
 
 
 for i in range(30000):
@@ -94,10 +101,13 @@ for i in range(day-11): x=x+pred_loss(model(i+10),inputx[i+10]).data[0]
 print(x/(day-10))
 
 x=pred_loss(model(13),inputx[13]).data[0]
+xt=pred_loss(mean,inputx[13]).data[0]
 for i in range(day): 
-	if (i%13)==0: x=x+pred_loss(model(i),inputx[i]).data[0]
+	if (i%13)==0: 
+		x=x+pred_loss(model(i),inputx[i]).data[0]
+		xt=xt+pred_loss(mean,inputx[i]).data[0]
 print(x/(day/13))
-
+print(xt/(day/13))
 
 
 
