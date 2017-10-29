@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 
 #from sklearn import svm
 
+#dynamical learning to look back
+
 import random
 import pandas as pd
 
