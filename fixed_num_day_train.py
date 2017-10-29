@@ -79,14 +79,14 @@ print(x/(day-10))
 xt=pred_loss(model(13),inputx[13]).data[0]
 mean=inputx[13]
 for i in range(day): 
-	if (i%13)==0: 
+	if ((i%13)==0) and (i>13): 
 		xt=xt+pred_loss(model(i),inputx[i]).data[0]
 		mean=mean+inputx[i]
 print(xt/(day/13))
 mean=mean/(day/13)
 
 
-for i in range(30000):
+for i in range(500000):
 	t=random.randint(10,day)
 	if not((t % 13)==0):
 		out=model(t)
@@ -102,12 +102,19 @@ print(x/(day-10))
 
 x=pred_loss(model(13),inputx[13]).data[0]
 xt=pred_loss(mean,inputx[13]).data[0]
+xtt=xt
 for i in range(day): 
-	if (i%13)==0: 
+	if ((i%13)==0) and (i>13):
+		temp=inputx[i-10]
+		for j in range(9):
+			temp=temp+inputx[i-j-1]			
+		temp=temp/10
 		x=x+pred_loss(model(i),inputx[i]).data[0]
 		xt=xt+pred_loss(mean,inputx[i]).data[0]
+		xtt=xtt+pred_loss(temp,inputx[i]).data[0]
 print(x/(day/13))
 print(xt/(day/13))
+print(xtt/(day/13))
 
 
 
