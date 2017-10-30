@@ -86,7 +86,7 @@ print(xt/(day/13))
 mean=mean/(day/13)
 
 
-for i in range(500000):
+for i in range(100000):
 	t=random.randint(10,day)
 	if not((t % 13)==0):
 		out=model(t)
@@ -116,6 +116,7 @@ print(x/(day/13))
 print(xt/(day/13))
 print(xtt/(day/13))
 
+torch.save(model.state_dict(),'./savednet-500000')
 
 
 
