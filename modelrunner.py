@@ -49,6 +49,6 @@ class Sequence(nn.Module):
         return h_t
 
 model=Sequence()
-model.load_state_dict(torch.load('./savednet'))
+model.load_state_dict(torch.load('./savednet-500000'))
 
 print(model(44))

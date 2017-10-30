@@ -69,7 +69,7 @@ def trainpred(out,target):
 
 
 model=Sequence().cuda()
-pred_optimizer=optim.SGD(model.parameters(),lr=0.1)
+pred_optimizer=optim.SGD(model.parameters(),lr=0.5)
 
 
 x=pred_loss(model(day-1),inputx[day-1]).data[0]
