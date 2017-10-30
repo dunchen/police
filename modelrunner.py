@@ -12,6 +12,7 @@ import pandas as pd
 x_dim=150
 h_dim=150
 inputx=[[0 for col in range(150)] for row in range(45000)]
+inputt=[0 for row in range(45000)]
 
 fil=pd.read_csv('all_type_150_count_d_reg.csv')
 n=41582-2
@@ -22,6 +23,7 @@ for i in range(n):
         if time!=temp_time:
                 day=day+1
                 temp_time=time
+                inputt[day]=time
         reg=fil.ix[i+2,2]
         if not(pd.isnull(reg)):
                 reg2=reg.astype(int)
