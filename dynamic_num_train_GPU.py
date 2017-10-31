@@ -43,7 +43,7 @@ for i in range(n):
                         inputx[day][reg2]=count/200
                 else:
                         inputx[day][reg2]=1
-inputx=Variable(torch.FloatTensor(inputx),requires_grad=False)
+inputx=Variable(torch.FloatTensor(inputx),requires_grad=False).cuda()
 
 #print(inputx[34])
 
@@ -84,32 +84,35 @@ class Sequence(nn.Module):
     def forward(self, x):
         outputs = []
         outputsy = []
-        h_t = Variable(torch.zeros(1,h_dim), requires_grad=False)
-        c_t = Variable(torch.zeros(1,h_dim), requires_grad=False)
+        h_t = Variable(torch.zeros(1,h_dim), requires_grad=False).cuda()
+        c_t = Variable(torch.zeros(1,h_dim), requires_grad=False).cuda()
         i=0
         y=torch.FloatTensor([[0,1]])   
         while i<30:
-            h_t, c_t = self.lstm(inputx[x-i-1], (h_t, c_t))
-            y=ystop(torch.cat((h_t,inputx[x-i-1].view(1,150)),1))
+            h_t, c_t = self.lstm(inputx[x-i-1].cuda(), (h_t, c_t))
+            temp_input=Variable(torch.cat((h_t,inputx[x-i-1].view(1,150)),1).data,requires_grad=False)
+            y=ystop(temp_input)
             outputs = outputs+ [h_t]
-            #outputsy =outputsy+ [y]
             i=i+1
             outh=h_t
-            if (random.random()>y[0][0].data).numpy(): break
+            if (random.random()>y[0][0].data).cpu().numpy(): 
+                #print(y[0][0].data[0])
+                #print(i)
+                break
+
 
         for j in range(min(10,x-i)):
-            h_t, c_t = self.lstm(inputx[x-i-1-j], (h_t, c_t))
-            y=ystop(torch.cat((h_t,inputx[x-i-1-j].view(1,150)),1))
+            h_t, c_t = self.lstm(inputx[x-i-1-j].cuda(), (h_t, c_t))
+            temp_input=Variable(torch.cat((h_t,inputx[x-i-1-j].view(1,150)),1).data,requires_grad=False).cuda()
             outputs=outputs+ [h_t]
-            #outputsy=outputsy+ [y]
         
-        return outh,outputs,i+min(10,x-i)-1
+        return outh,outputs,i+9
 
 def trainstopsign(x,outputs,size,target):
     minx=9999
     minloss=Variable(torch.FloatTensor([9999]))
     for i in range(size):
-        loss=pred_loss(outputs[i],target)
+        loss=pred_loss(outputs[i],target).cpu()
         if (loss.data<minloss.data).numpy():
             minloss=loss
             minx=i
@@ -117,15 +120,15 @@ def trainstopsign(x,outputs,size,target):
     for i in range(size):
         #p1=Variable(torch.LongTensor([0]),requires_grad=False)
         #p2=Variable(torch.LongTensor([1]),requires_grad=False)
-        temp_input=Variable(torch.cat((outputs[i],inputx[x-i-1].view(1,150)),1).data,requires_grad=False)
+        temp_input=Variable(torch.cat((outputs[i],inputx[x-i-1].view(1,150)),1).data,requires_grad=False).cuda()
         y=ystop(temp_input)
         if minx<i:
-            loss=stop_loss(y,Variable(torch.LongTensor([0]),requires_grad=False))
+            loss=stop_loss(y,Variable(torch.LongTensor([1]),requires_grad=False).cuda())
             loss.backward()
             stop_optimizer.step()
             stop_optimizer.zero_grad()
         else:
-            loss=stop_loss(y,Variable(torch.LongTensor([1]),requires_grad=False))
+            loss=stop_loss(y,Variable(torch.LongTensor([0]),requires_grad=False).cuda())
             loss.backward()
             stop_optimizer.step()
             stop_optimizer.zero_grad()
@@ -140,8 +143,8 @@ def trainpred(out,target):
     return
 
 
-model=Sequence()
-ystop=stopsign()
+model=Sequence().cuda()
+ystop=stopsign().cuda()
 pred_optimizer=optim.SGD(model.parameters(),lr=0.5)
 stop_optimizer=optim.Adam(ystop.parameters(),lr=1e-3)
 
@@ -153,8 +156,17 @@ for i in range(day-41):
         x=x+pred_loss(xh,inputx[i]).data[0]
 print(x/(day-41))
 
+xh,_,_=model(52)
+xt=pred_loss(xh,inputx[52]).data[0]
+for i in range(day):
+        if ((i%13)==0) and (i>52):
+                xh,_,_=model(i)
+                xt=xt+pred_loss(xh,inputx[i]).data[0]
+print(xt/(day/13))
 
-for i in range(10000):
+
+print('*************************************************************')
+for i in range(50000):
 	t=random.randint(40,day)
 	if not((t % 13)==0):
 		pred_optimizer.zero_grad()
@@ -164,10 +176,21 @@ for i in range(10000):
 		trainstopsign(t,outs,size,inputx[t])
 		trainpred(out,inputx[t])
 
+
 xh,_,_=model(day-1)
 x=pred_loss(xh,inputx[day-1]).data[0]
 for i in range(day-41):
         xh,_,_=model(i)
         x=x+pred_loss(xh,inputx[i]).data[0]
 print(x/(day-41))
+
+xh,_,_=model(52)
+xt=pred_loss(xh,inputx[52]).data[0]
+for i in range(day):
+        if ((i%13)==0) and (i>52):
+                xh,_,_=model(i)
+                xt=xt+pred_loss(xh,inputx[i]).data[0]
+print(xt/(day/13))
+
+torch.save(model.state_dict(),'./savednet-dynamic-100000')
 
