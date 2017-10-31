@@ -1,0 +1,40 @@
+---
+title: "GeoCoding_FourIncident"
+output: html_document
+---
+```{r}
+# Calling package dplyr
+library(dplyr)
+# Don't delete this chunk if you are using the DataComputing package
+library(mosaic)
+library(ggmap)
+```
+
+```{r}
+infile <- "data"
+data <- read.csv(paste0('./', infile, '.csv'))
+# get the address list, and append "Cincinnati" to the end to increase accuracy 
+# (change or remove this if your address already include a country etc.)
+addresses = data$ADDRESS_X
+addresses = paste0(addresses, ", Cincinnati")
+```
+
+```{r}
+for(i in 1:nrow(data))
+{
+  if (is.na(data$LATITUDE_X[i])){
+  print(paste("Working on index", i, "of", nrow(data)))
+  result <- geocode(addresses[i], output = "latlona", source = "google")
+  data$LONGITUDE_X[i] <- as.numeric(result[1])
+  data$LATITUDE_X[i] <- as.numeric(result[2])
+  }
+}
+
+```
+
+```{r}
+write.csv(data, file = "data.csv")
+getwd() #get working directory-> find the data.csv file in this folder and upload it to github
+```
+
+
