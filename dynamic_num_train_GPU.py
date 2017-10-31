@@ -192,5 +192,7 @@ for i in range(day):
                 xt=xt+pred_loss(xh,inputx[i]).data[0]
 print(xt/(day/13))
 
-torch.save(model.state_dict(),'./savednet-dynamic-100000')
-
+from time import gmtime,strftime
+p=strftime()
+torch.save(model.state_dict(),'./savednet-dynamic-model-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
+torch.save(ystop.state_dict(),'./savednet-dynamic-stopsign-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
