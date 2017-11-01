@@ -64,6 +64,7 @@ eg. fact statement: patrol time是什么，我们怎么用的
 －>说明有些type发生得更frequently。
 
 2.2 Three pairs of maps：
+
   (a) Same time of the day, same date, different location
   
   (b) Same time of the day, different date, same location (Try 2017/06/26 and 2014/11/03) (用不同的颜色标记data so that the info can be visualized on a single graph)
@@ -100,8 +101,11 @@ Thus, we focus on 4 types: car_accident .etc
 4.1.3 展示结果
 
 4.1.4 展示结果的有限性：
+
 (a) assume independence among regions / independence between variables (?????存疑，需要找一下书或者其他解释为什么它是assume independence的)
+
 (b) result/prediction: fixed (?????)
+
 (c) look at the R^2 or some other measurement to show how well the model captures the variations in data.
 
 4.2 LSTM
