@@ -22,6 +22,8 @@ h2_dim=50
 h3_dim=25
 inputx=[[0 for col in range(150)] for row in range(45000)]
 
+test_ix=[0 for row in range(45000)]
+
 pred_loss =nn.MSELoss()
 stop_loss=nn.CrossEntropyLoss()
 
@@ -44,6 +46,12 @@ for i in range(n):
                 else:
                         inputx[day][reg2]=1
 inputx=Variable(torch.FloatTensor(inputx),requires_grad=False).cuda()
+
+test_num=0
+for i in range(day):
+	if (random.random()<(1/13)):
+		test_ix[i]=1
+		test_num=test_num+1
 
 #print(inputx[34])
 
@@ -152,23 +160,23 @@ stop_optimizer=optim.Adam(ystop.parameters(),lr=1e-3)
 xh,_,_=model(day-1)
 x=pred_loss(xh,inputx[day-1]).data[0]
 for i in range(day-41):
-        xh,_,_=model(i)
-        x=x+pred_loss(xh,inputx[i]).data[0]
+        xh,_,_=model(i+40)
+        x=x+pred_loss(xh,inputx[i+40]).data[0]
 print(x/(day-41))
 
-xh,_,_=model(52)
-xt=pred_loss(xh,inputx[52]).data[0]
+xh,_,_=model(40)
+xt=pred_loss(xh,inputx[40]).data[0]
 for i in range(day):
-        if ((i%13)==0) and (i>52):
+        if (test_ix[i]==1) and (i>40):
                 xh,_,_=model(i)
                 xt=xt+pred_loss(xh,inputx[i]).data[0]
-print(xt/(day/13))
+print(xt/test_num)
 
 
 print('*************************************************************')
-for i in range(50000):
+for i in range(500000):
 	t=random.randint(40,day)
-	if not((t % 13)==0):
+	if (test_ix[t]==0):
 		pred_optimizer.zero_grad()
 		stop_optimizer.zero_grad()
 		out,outs,size=model(t)
@@ -180,19 +188,19 @@ for i in range(50000):
 xh,_,_=model(day-1)
 x=pred_loss(xh,inputx[day-1]).data[0]
 for i in range(day-41):
-        xh,_,_=model(i)
-        x=x+pred_loss(xh,inputx[i]).data[0]
+        xh,_,_=model(i+40)
+        x=x+pred_loss(xh,inputx[i+40]).data[0]
 print(x/(day-41))
 
-xh,_,_=model(52)
-xt=pred_loss(xh,inputx[52]).data[0]
+xh,_,_=model(40)
+xt=pred_loss(xh,inputx[40]).data[0]
 for i in range(day):
-        if ((i%13)==0) and (i>52):
+        if (test_ix[i]==1) and (i>40):
                 xh,_,_=model(i)
                 xt=xt+pred_loss(xh,inputx[i]).data[0]
-print(xt/(day/13))
+print(xt/test_num)
 
 from time import gmtime,strftime
-p=strftime()
-torch.save(model.state_dict(),'./savednet-dynamic-model-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
-torch.save(ystop.state_dict(),'./savednet-dynamic-stopsign-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
+p=gmtime()
+torch.save(model.state_dict(),'./tsavednet-dynamic-model-500000'+strftime("%Y-%m-%d %H:%M:%S", p))
+torch.save(ystop.state_dict(),'./tsavednet-dynamic-stopsign-500000'+strftime("%Y-%m-%d %H:%M:%S", p))

@@ -8,11 +8,21 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 import pandas as pd
+import random
 
+random.seed()
 x_dim=150
 h_dim=150
+h2_dim=50
+h3_dim=25
 inputx=[[0 for col in range(150)] for row in range(45000)]
 inputt=[0 for row in range(45000)]
+
+test_ix=[0 for row in range(45000)]
+
+pred_loss =nn.MSELoss()
+stop_loss=nn.CrossEntropyLoss()
+
 
 fil=pd.read_csv('all_type_150_count_d_reg.csv')
 n=41582-2
@@ -34,6 +44,13 @@ for i in range(n):
                 else:
                         inputx[day][reg2]=1
 inputx=Variable(torch.FloatTensor(inputx),requires_grad=False)
+
+test_num=0
+for i in range(day):
+        if (random.random()<(1/13)):
+                test_ix[i]=1
+                test_num=test_num+1
+
 
 class stopsign(nn.Module):
     def __init__(self):
@@ -58,25 +75,25 @@ class Sequence(nn.Module):
     def forward(self, x):
         outputs = []
         outputsy = []
-        h_t = Variable(torch.zeros(1,h_dim), requires_grad=False).cuda()
-        c_t = Variable(torch.zeros(1,h_dim), requires_grad=False).cuda()
+        h_t = Variable(torch.zeros(1,h_dim), requires_grad=False)
+        c_t = Variable(torch.zeros(1,h_dim), requires_grad=False)
         i=0
         y=torch.FloatTensor([[0,1]])
         while i<30:
-            h_t, c_t = self.lstm(inputx[x-i-1].cuda(), (h_t, c_t))
+            h_t, c_t = self.lstm(inputx[x-i-1], (h_t, c_t))
             temp_input=Variable(torch.cat((h_t,inputx[x-i-1].view(1,150)),1).data,requires_grad=False)
             y=ystop(temp_input)
             outputs = outputs+ [h_t]
             i=i+1
             outh=h_t
-            if (random.random()>y[0][0].data).cpu().numpy():
-                #print(y[0][0].data[0])
+            if (random.random()>y[0][0].data).numpy():
+                print(y[0][0].data[0])
                 #print(i)
                 break
 
 
         for j in range(min(10,x-i)):
-            h_t, c_t = self.lstm(inputx[x-i-1-j].cuda(), (h_t, c_t))
+            h_t, c_t = self.lstm(inputx[x-i-1-j], (h_t, c_t))
             temp_input=Variable(torch.cat((h_t,inputx[x-i-1-j].view(1,150)),1).data,requires_grad=False).cuda()
             outputs=outputs+ [h_t]
 
@@ -85,4 +102,16 @@ class Sequence(nn.Module):
 model=Sequence()
 model.load_state_dict(torch.load('./savednet-dynamic-model-1000002017-10-31 02:03:03'))
 ystop=stopsign()
-ystop.load_state_dict(torch.load('./savednet-dynamic-stopsign-1000002017-10-31 02:02:46'))
+ystop.load_state_dict(torch.load('./savednet-dynamic-stopsign-1000002017-10-31 02:02:22'))
+
+
+
+
+xh,_,_=model(40)
+xt=pred_loss(xh,inputx[40]).data[0]
+for i in range(day):
+        if (test_ix[i]==1) and (i>40):
+                xh,_,_=model(i)
+                xt=xt+pred_loss(xh,inputx[i]).data[0]
+print(xt/test_num)
+
