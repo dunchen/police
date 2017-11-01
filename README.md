@@ -64,9 +64,9 @@ eg. fact statement: patrol time是什么，我们怎么用的
 －>说明有些type发生得更frequently。
 
 2.2 Three pairs of maps：
-  - Same time of the day, same date, different location 
-  - Same time of the day, different date, same location (Try 2017/06/26 and 2014/11/03) (用不同的颜色标记data so that the info can be visualized on a single graph)
-  - Different time of the day, same date, same location (same as above: can use 3 colors for 3 shifts)
+  (a) Same time of the day, same date, different location 
+  (b) Same time of the day, different date, same location (Try 2017/06/26 and 2014/11/03) (用不同的颜色标记data so that the info can be visualized on a single graph)
+  (c) Different time of the day, same date, same location (same as above: can use 3 colors for 3 shifts)
 
 2.3 从上面3个图我们可以看到，
 time of the day matters, (///但是这个的预测我们没有办法做到精确，只能用shifts代替；所以这里的time of the day我们实际上指的是different shifts?)
