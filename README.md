@@ -64,8 +64,10 @@ eg. fact statement: patrol time是什么，我们怎么用的
 －>说明有些type发生得更frequently。
 
 2.2 Three pairs of maps：
-  (a) Same time of the day, same date, different location 
+  (a) Same time of the day, same date, different location
+  
   (b) Same time of the day, different date, same location (Try 2017/06/26 and 2014/11/03) (用不同的颜色标记data so that the info can be visualized on a single graph)
+  
   (c) Different time of the day, same date, same location (same as above: can use 3 colors for 3 shifts)
 
 2.3 从上面3个图我们可以看到，
@@ -117,4 +119,4 @@ eg. 是动态的，自动学习，所以可以规避xxxyyyzzz Poisson capture不
 eg. 不同的date预测结果不一样
 eg. 不assume independence
 
-### 5. 所以我们的结果非常好非常厉害。
+### 5. 所以我们的结果非常好非常厉害
