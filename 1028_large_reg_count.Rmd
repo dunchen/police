@@ -1,0 +1,207 @@
+
+```{r}
+large_reg <- large_reg[c(3:12)]
+```
+
+```{r}
+dx = (39.61-39.06)/5 #latitude
+dy = (-84.37+84.76)/30 #longitude
+a = c(1:6)
+b = c(1:31)
+for (i in c(1:6)) {
+  a[i] = 39.06+(i-1)*dx
+}
+for (i in c(1:31)) {
+  b[i] = -84.76+(i-1)*dy
+}
+```
+
+
+```{r}
+all_type_150 <-
+  large_reg %>%
+  mutate(region = derivedFactor(
+      "1" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[1] < LONGITUDE_X & LONGITUDE_X<= b[2]),
+     "2" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[2] < LONGITUDE_X & LONGITUDE_X <= b[3]),
+     "3" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[3] < LONGITUDE_X & LONGITUDE_X<= b[4]),
+     "4" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[4] < LONGITUDE_X & LONGITUDE_X <= b[5]),
+     "5" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[5] < LONGITUDE_X & LONGITUDE_X<= b[6]),
+     "6" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[6] < LONGITUDE_X & LONGITUDE_X <= b[7]),
+     "7" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[7] < LONGITUDE_X & LONGITUDE_X<= b[8]),
+     "8" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[8] < LONGITUDE_X & LONGITUDE_X <= b[9]),
+     "9" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[9] < LONGITUDE_X & LONGITUDE_X<= b[10]),
+     "10" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[10] < LONGITUDE_X & LONGITUDE_X <= b[11]),
+      "11" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[11] < LONGITUDE_X & LONGITUDE_X<= b[12]),
+     "12" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[12] < LONGITUDE_X & LONGITUDE_X <= b[13]),
+     "13" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[13] < LONGITUDE_X & LONGITUDE_X<= b[14]),
+     "14" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[14] < LONGITUDE_X & LONGITUDE_X <= b[15]),
+     "15" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[15] < LONGITUDE_X & LONGITUDE_X<= b[16]),
+     "16" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[16] < LONGITUDE_X & LONGITUDE_X <= b[17]),
+     "17" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[17] < LONGITUDE_X & LONGITUDE_X<= b[18]),
+     "18" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[18] < LONGITUDE_X & LONGITUDE_X <= b[19]),
+     "19" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[19] < LONGITUDE_X & LONGITUDE_X<= b[20]),
+     "20" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[20] < LONGITUDE_X & LONGITUDE_X <= b[21]),
+      "21" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[21] < LONGITUDE_X & LONGITUDE_X<= b[22]),
+     "22" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[22] < LONGITUDE_X & LONGITUDE_X <= b[23]),
+     "23" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[23] < LONGITUDE_X & LONGITUDE_X<= b[24]),
+     "24" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[24] < LONGITUDE_X & LONGITUDE_X <= b[25]),
+     "25" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[25] < LONGITUDE_X & LONGITUDE_X<= b[26]),
+     "26" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[26] < LONGITUDE_X & LONGITUDE_X <= b[27]),
+     "27" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[27] < LONGITUDE_X & LONGITUDE_X<= b[28]),
+     "28" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[28] < LONGITUDE_X & LONGITUDE_X <= b[29]),
+     "29" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[29] < LONGITUDE_X & LONGITUDE_X<= b[30]),
+     "30" = ( a[1] <= LATITUDE_X & LATITUDE_X <= a[2] & b[30] < LONGITUDE_X & LONGITUDE_X <= b[31]),
+     
+     
+     "31" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[1] < LONGITUDE_X & LONGITUDE_X<= b[2]),
+     "32" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[2] < LONGITUDE_X & LONGITUDE_X <= b[3]),
+     "33" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[3] < LONGITUDE_X & LONGITUDE_X<= b[4]),
+     "34" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[4] < LONGITUDE_X & LONGITUDE_X <= b[5]),
+     "35" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[5] < LONGITUDE_X & LONGITUDE_X<= b[6]),
+     "36" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[6] < LONGITUDE_X & LONGITUDE_X <= b[7]),
+     "37" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[7] < LONGITUDE_X & LONGITUDE_X<= b[8]),
+     "38" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[8] < LONGITUDE_X & LONGITUDE_X <= b[9]),
+     "39" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[9] < LONGITUDE_X & LONGITUDE_X<= b[10]),
+     "40" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[10] < LONGITUDE_X & LONGITUDE_X <= b[11]),
+      "41" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[11] < LONGITUDE_X & LONGITUDE_X<= b[12]),
+     "42" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[12] < LONGITUDE_X & LONGITUDE_X <= b[13]),
+     "43" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[13] < LONGITUDE_X & LONGITUDE_X<= b[14]),
+     "44" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[14] < LONGITUDE_X & LONGITUDE_X <= b[15]),
+     "45" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[15] < LONGITUDE_X & LONGITUDE_X<= b[16]),
+     "46" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[16] < LONGITUDE_X & LONGITUDE_X <= b[17]),
+     "47" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[17] < LONGITUDE_X & LONGITUDE_X<= b[18]),
+     "48" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[18] < LONGITUDE_X & LONGITUDE_X <= b[19]),
+     "49" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[19] < LONGITUDE_X & LONGITUDE_X<= b[20]),
+     "50" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[20] < LONGITUDE_X & LONGITUDE_X <= b[21]),
+      "51" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[21] < LONGITUDE_X & LONGITUDE_X<= b[22]),
+     "52" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[22] < LONGITUDE_X & LONGITUDE_X <= b[23]),
+     "53" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[23] < LONGITUDE_X & LONGITUDE_X<= b[24]),
+     "54" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[24] < LONGITUDE_X & LONGITUDE_X <= b[25]),
+     "55" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[25] < LONGITUDE_X & LONGITUDE_X<= b[26]),
+     "56" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[26] < LONGITUDE_X & LONGITUDE_X <= b[27]),
+     "57" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[27] < LONGITUDE_X & LONGITUDE_X<= b[28]),
+     "58" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[28] < LONGITUDE_X & LONGITUDE_X <= b[29]),
+     "59" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[29] < LONGITUDE_X & LONGITUDE_X<= b[30]),
+     "60" = ( a[2]< LATITUDE_X & LATITUDE_X <= a[3] & b[30] < LONGITUDE_X & LONGITUDE_X <= b[31]),
+     
+     
+     
+     "61" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[1] < LONGITUDE_X & LONGITUDE_X<= b[2]),
+     "62" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[2] < LONGITUDE_X & LONGITUDE_X <= b[3]),
+     "63" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[3] < LONGITUDE_X & LONGITUDE_X<= b[4]),
+     "64" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[4] < LONGITUDE_X & LONGITUDE_X <= b[5]),
+     "65" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[5] < LONGITUDE_X & LONGITUDE_X<= b[6]),
+     "66" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[6] < LONGITUDE_X & LONGITUDE_X <= b[7]),
+     "67" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[7] < LONGITUDE_X & LONGITUDE_X<= b[8]),
+     "68" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[8] < LONGITUDE_X & LONGITUDE_X <= b[9]),
+     "69" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[9] < LONGITUDE_X & LONGITUDE_X<= b[10]),
+     "70" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[10] < LONGITUDE_X & LONGITUDE_X <= b[11]),
+      "71" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[11] < LONGITUDE_X & LONGITUDE_X<= b[12]),
+     "72" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[12] < LONGITUDE_X & LONGITUDE_X <= b[13]),
+     "73" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[13] < LONGITUDE_X & LONGITUDE_X<= b[14]),
+     "74" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[14] < LONGITUDE_X & LONGITUDE_X <= b[15]),
+     "75" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[15] < LONGITUDE_X & LONGITUDE_X<= b[16]),
+     "76" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[16] < LONGITUDE_X & LONGITUDE_X <= b[17]),
+     "77" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[17] < LONGITUDE_X & LONGITUDE_X<= b[18]),
+     "78" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[18] < LONGITUDE_X & LONGITUDE_X <= b[19]),
+     "79" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[19] < LONGITUDE_X & LONGITUDE_X<= b[20]),
+     "80" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[20] < LONGITUDE_X & LONGITUDE_X <= b[21]),
+      "81" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[21] < LONGITUDE_X & LONGITUDE_X<= b[22]),
+     "82" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[22] < LONGITUDE_X & LONGITUDE_X <= b[23]),
+     "83" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[23] < LONGITUDE_X & LONGITUDE_X<= b[24]),
+     "84" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[24] < LONGITUDE_X & LONGITUDE_X <= b[25]),
+     "85" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[25] < LONGITUDE_X & LONGITUDE_X<= b[26]),
+     "86" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[26] < LONGITUDE_X & LONGITUDE_X <= b[27]),
+     "87" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[27] < LONGITUDE_X & LONGITUDE_X<= b[28]),
+     "88" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[28] < LONGITUDE_X & LONGITUDE_X <= b[29]),
+     "89" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[29] < LONGITUDE_X & LONGITUDE_X<= b[30]),
+     "90" = ( a[3]< LATITUDE_X & LATITUDE_X <= a[4] & b[30] < LONGITUDE_X & LONGITUDE_X <= b[31]),
+
+
+
+     "91" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[1] < LONGITUDE_X & LONGITUDE_X<= b[2]),
+     "92" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[2] < LONGITUDE_X & LONGITUDE_X <= b[3]),
+     "93" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[3] < LONGITUDE_X & LONGITUDE_X<= b[4]),
+     "94" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[4] < LONGITUDE_X & LONGITUDE_X <= b[5]),
+     "95" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[5] < LONGITUDE_X & LONGITUDE_X<= b[6]),
+     "96" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[6] < LONGITUDE_X & LONGITUDE_X <= b[7]),
+     "97" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[7] < LONGITUDE_X & LONGITUDE_X<= b[8]),
+     "98" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[8] < LONGITUDE_X & LONGITUDE_X <= b[9]),
+     "99" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[9] < LONGITUDE_X & LONGITUDE_X<= b[10]),
+     "100" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[10] < LONGITUDE_X & LONGITUDE_X <= b[11]),
+      "101" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[11] < LONGITUDE_X & LONGITUDE_X<= b[12]),
+     "102" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[12] < LONGITUDE_X & LONGITUDE_X <= b[13]),
+     "103" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[13] < LONGITUDE_X & LONGITUDE_X<= b[14]),
+     "104" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[14] < LONGITUDE_X & LONGITUDE_X <= b[15]),
+     "105" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[15] < LONGITUDE_X & LONGITUDE_X<= b[16]),
+     "106" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[16] < LONGITUDE_X & LONGITUDE_X <= b[17]),
+     "107" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[17] < LONGITUDE_X & LONGITUDE_X<= b[18]),
+     "108" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[18] < LONGITUDE_X & LONGITUDE_X <= b[19]),
+     "109" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[19] < LONGITUDE_X & LONGITUDE_X<= b[20]),
+     "110" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[20] < LONGITUDE_X & LONGITUDE_X <= b[21]),
+      "111" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[21] < LONGITUDE_X & LONGITUDE_X<= b[22]),
+     "112" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[22] < LONGITUDE_X & LONGITUDE_X <= b[23]),
+     "113" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[23] < LONGITUDE_X & LONGITUDE_X<= b[24]),
+     "114" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[24] < LONGITUDE_X & LONGITUDE_X <= b[25]),
+     "115" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[25] < LONGITUDE_X & LONGITUDE_X<= b[26]),
+     "116" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[26] < LONGITUDE_X & LONGITUDE_X <= b[27]),
+     "117" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[27] < LONGITUDE_X & LONGITUDE_X<= b[28]),
+     "118" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[28] < LONGITUDE_X & LONGITUDE_X <= b[29]),
+     "119" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[29] < LONGITUDE_X & LONGITUDE_X<= b[30]),
+     "120" = ( a[4]< LATITUDE_X & LATITUDE_X <= a[5] & b[30] < LONGITUDE_X & LONGITUDE_X <= b[31]),
+
+
+
+     "121" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[1] < LONGITUDE_X & LONGITUDE_X<= b[2]),
+     "122" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[2] < LONGITUDE_X & LONGITUDE_X <= b[3]),
+     "123" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[3] < LONGITUDE_X & LONGITUDE_X<= b[4]),
+     "124" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[4] < LONGITUDE_X & LONGITUDE_X <= b[5]),
+     "125" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[5] < LONGITUDE_X & LONGITUDE_X<= b[6]),
+     "126" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[6] < LONGITUDE_X & LONGITUDE_X <= b[7]),
+     "127" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[7] < LONGITUDE_X & LONGITUDE_X<= b[8]),
+     "128" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[8] < LONGITUDE_X & LONGITUDE_X <= b[9]),
+     "129" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[9] < LONGITUDE_X & LONGITUDE_X<= b[10]),
+     "130" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[10] < LONGITUDE_X & LONGITUDE_X <= b[11]),
+     "131" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[11] < LONGITUDE_X & LONGITUDE_X<= b[12]),
+     "132" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[12] < LONGITUDE_X & LONGITUDE_X <= b[13]),
+     "133" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[13] < LONGITUDE_X & LONGITUDE_X<= b[14]),
+     "134" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[14] < LONGITUDE_X & LONGITUDE_X <= b[15]),
+     "135" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[15] < LONGITUDE_X & LONGITUDE_X<= b[16]),
+     "136" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[16] < LONGITUDE_X & LONGITUDE_X <= b[17]),
+     "137" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[17] < LONGITUDE_X & LONGITUDE_X<= b[18]),
+     "138" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[18] < LONGITUDE_X & LONGITUDE_X <= b[19]),
+     "139" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[19] < LONGITUDE_X & LONGITUDE_X<= b[20]),
+     "140" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[20] < LONGITUDE_X & LONGITUDE_X <= b[21]),
+     "141" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[21] < LONGITUDE_X & LONGITUDE_X<= b[22]),
+     "142" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[22] < LONGITUDE_X & LONGITUDE_X <= b[23]),
+     "143" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[23] < LONGITUDE_X & LONGITUDE_X<= b[24]),
+     "144" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[24] < LONGITUDE_X & LONGITUDE_X <= b[25]),
+     "145" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[25] < LONGITUDE_X & LONGITUDE_X<= b[26]),
+     "146" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[26] < LONGITUDE_X & LONGITUDE_X <= b[27]),
+     "147" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[27] < LONGITUDE_X & LONGITUDE_X<= b[28]),
+     "148" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[28] < LONGITUDE_X & LONGITUDE_X <= b[29]),
+     "149" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[29] < LONGITUDE_X & LONGITUDE_X<= b[30]),
+     "150" = ( a[5]< LATITUDE_X & LATITUDE_X <= a[6] & b[30] < LONGITUDE_X & LONGITUDE_X <= b[31]),
+.method = "first",
+.default = NA
+))
+```
+
+
+```{r}
+all_type_150_dmy <-
+  all_type_150 %>%
+  mutate(month = month(mdy_hms(CREATE_TIME_INCIDENT))) %>%
+  mutate(year = year(mdy_hms(CREATE_TIME_INCIDENT)))
+```
+
+
+```{r}
+all_type_150_count <-
+  all_type_150_dmy %>%
+  mutate(month_2 = month+12*(year-2014)) %>%
+  group_by(month_2, region) %>%
+  summarise(count=n())
+```
+
+
