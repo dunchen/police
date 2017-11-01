@@ -51,6 +51,7 @@ predict the patrol route
 
 # 11.01 17:23 edit
 我们的故事中需要涉及／圆回来的问题：
+
 1. 背景介绍
 1.1 Cincinnati警察局的dataset的variable们，数据是怎样收集的，cases都是什么etc， 要求／希望我们给出什么建议
 1.2 一些我们接下来会用到的variable的解释：xx代表yy
@@ -59,12 +60,10 @@ eg. fact statement: patrol time是什么，我们怎么用的
 2. 展示data
 2.1 bar plot/ histogram: x-axis是所有的（？）incident type, y-axis是dataset种的个数／count，图里面可以按照数目多少把案件类型从大到小排序。
 －>说明有些type发生得更frequently。
-
 2.2 Three pairs of maps：
   - Same time of the day, same date, different location 
   - Same time of the day, different date, same location (Try 2017/06/26 and 2014/11/03) (用不同的颜色标记data so that the info can be visualized on a single graph)
   - Different time of the day, same date, same location (same as above: can use 3 colors for 3 shifts)
-
 2.3 从上面3个图我们可以看到，
 time of the day matters, (///但是这个的预测我们没有办法做到精确，只能用shifts代替；所以这里的time of the day我们实际上指的是different shifts?)
 date matters, 
@@ -92,6 +91,7 @@ Thus, we focus on 4 types: car_accident .etc
 assume independence among regions / independence between variables (?????存疑，需要找一下书或者其他解释为什么它是assume independence的)
 result/prediction: fixed (?????)
 look at the R^2 or some other measurement to show how well the model captures the variations in data.
+
 4.2 LSTM
 4.2.1 LSTM的介绍：是什么
 4.2.2 LSTM在我们的case中的应用：variables的选取，怎么预测
