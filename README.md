@@ -118,9 +118,13 @@ Thus, we focus on 4 types: car_accident .etc
 画图表示：选择不同的date预测结果不一样
 
 4.2.4 LSTM的优越性，与Poisson model相比
+
 （+说明一下Poisson最普遍应用的、合适这个情况的统计模型了，所以4.2里面和它比较是有意义的）
+
 eg. 是动态的，自动学习，所以可以规避xxxyyyzzz Poisson capture不到的情况
+
 eg. 不同的date预测结果不一样
+
 eg. 不assume independence
 
 ### 5. 所以我们的结果非常好非常厉害
