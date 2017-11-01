@@ -8,10 +8,11 @@ library(dplyr)
 # Don't delete this chunk if you are using the DataComputing package
 library(mosaic)
 library(ggmap)
+library(lubridate)
 ```
 
 ```{r}
-infile <- "data"
+infile <- "datav16810"
 data <- read.csv(paste0('./', infile, '.csv'))
 # get the address list, and append "Cincinnati" to the end to increase accuracy 
 # (change or remove this if your address already include a country etc.)
@@ -20,7 +21,7 @@ addresses = paste0(addresses, ", Cincinnati")
 ```
 
 ```{r}
-for(i in 1:nrow(data))
+for(i in 16810:nrow(data))
 {
   if (is.na(data$LATITUDE_X[i])){
   print(paste("Working on index", i, "of", nrow(data)))
@@ -37,4 +38,97 @@ write.csv(data, file = "data.csv")
 getwd() #get working directory-> find the data.csv file in this folder and upload it to github
 ```
 
+```{r}
+#combine the v2 dataset into main dataset, data is 16810
+for(i in 19727:22296)
+{
+  data$LONGITUDE_X[i] <- as.numeric(datav2v22647$LONGITUDE_X[i])
+  data$LATITUDE_X[i] <- as.numeric(datav2v22647$LATITUDE_X[i])
+}
+```
+```{r}
+#combine the v3 dataset into main dataset, data is 16810
+for(i in 22296:24959)
+{
+  data$LONGITUDE_X[i] <- as.numeric(datav3v25182$LONGITUDE_X[i])
+  data$LATITUDE_X[i] <- as.numeric(datav3v25182$LATITUDE_X[i])
+}
+```
+```{r}
+#combine the v4 dataset into main dataset, data is 16810
+for(i in 24959:27489)
+{
+  data$LONGITUDE_X[i] <- as.numeric(datav4v27843$LONGITUDE_X[i])
+  data$LATITUDE_X[i] <- as.numeric(datav4v27843$LATITUDE_X[i])
+}
+```
+```{r}
+#combine the v5 dataset into main dataset, data is 16810
+for(i in 27489:59274)
+{
+  data$LONGITUDE_X[i] <- as.numeric(datav5v59274$LONGITUDE_X[i])
+  data$LATITUDE_X[i] <- as.numeric(datav5v59274$LATITUDE_X[i])
+}
+```
+```{r}
+#combine the v1 dataset into main dataset, data is 16810
+for(i in 16810:19727)
+{
+  data$LONGITUDE_X[i] <- as.numeric(datav1$LONGITUDE_X[i])
+  data$LATITUDE_X[i] <- as.numeric(datav1$LATITUDE_X[i])
+}
+```
+
+```{r}
+write.csv(data, file = "data_fourtype_wNA.csv")
+```
+
+```{r}
+fourtype_nNA <- data %>%
+  filter(!is.na(LATITUDE_X) & !is.na(LONGITUDE_X))
+```
+
+```{r}
+fourtype_ymd<-
+  fourtype_nNA %>%
+  select(X, ADDRESS_X,LATITUDE_X,LONGITUDE_X,CREATE_TIME_INCIDENT,INCIDENT_TYPE_DESC,NEIGHBORHOOD,STREET_SRCH,ARRIVAL_TIME_PRIMARY_UNIT,CLOSED_TIME_INCIDENT,DISPATCH_TIME_PRIMARY_UNIT) %>%
+  mutate(date=
+           lubridate::mdy_hms(CREATE_TIME_INCIDENT))%>%
+  mutate(year=
+           lubridate::year(date))%>%
+  mutate(month=
+           lubridate::month(date))%>%
+  mutate(day=
+           lubridate::day(date)) 
+View(fourtype_ymd)
+```
+
+```{r}
+summary(fourtype_ymd$LATITUDE_X)
+summary(fourtype_ymd$LONGITUDE_X)
+quantile(fourtype_ymd$LATITUDE_X, c(.001, .57, .999)) 
+quantile(fourtype_ymd$LONGITUDE_X, c(.001, .57, .999)) 
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#  -25.29   39.11   39.14   39.11   39.16   47.71 
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# -122.10  -84.56  -84.52  -84.49  -84.48   79.83 
+#     0.1%      57%    99.9% 
+# 29.90169 39.14238 43.17675 
+#       0.1%        57%      99.9% 
+# -117.17911  -84.51188  -74.57762 
+```
+```{r}
+fourtype_ymd_999<-
+  fourtype_ymd %>%
+  arrange(LATITUDE_X,LONGITUDE_X)%>%
+  filter(LATITUDE_X > 39.9, LONGITUDE_X > -117.1) %>%
+  filter(LATITUDE_X < 43.17, LONGITUDE_X < -74.6) 
+  
+```
+```{r}
+summary(fourtype_ymd_999$LATITUDE_X)
+summary(fourtype_ymd_999$LONGITUDE_X)
+#boxplot(fourtype_ymd_999$LATITUDE_X)
+#boxplot(fourtype_ymd_999$LONGITUDE_X)
+```
 
