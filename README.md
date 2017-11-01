@@ -39,3 +39,6 @@ predict the patrol route
 - Further work: Specify the type of incident in the training model 
 
 + Limitations & Future Exploration?
+
+- Possion 
+- Wheather there is spatial correlation
