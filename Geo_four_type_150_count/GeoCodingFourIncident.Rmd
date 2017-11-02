@@ -104,10 +104,54 @@ View(fourtype_ymd)
 ```
 
 ```{r}
+write.csv(fourtype_ymd, file = "fourtype_ymd.csv")
+```
+summary(fourtype_ymd)
+       X                         ADDRESS_X       LATITUDE_X      LONGITUDE_X     
+ Min.   :    1   23XX FERGUSON RD     :  341   Min.   :-25.29   Min.   :-122.10  
+ 1st Qu.:17146   61XX GLENWAY AV      :  283   1st Qu.: 39.11   1st Qu.: -84.56  
+ Median :35506   60XX GLENWAY AV      :  205   Median : 39.14   Median : -84.52  
+ Mean   :32692   34XX SPRING GROVE AV :  190   Mean   : 39.11   Mean   : -84.49  
+ 3rd Qu.:47385   36XX WARSAW AV       :  160   3rd Qu.: 39.16   3rd Qu.: -84.48  
+ Max.   :59274   3XX EZZARD CHARLES DR:  149   Max.   : 47.71   Max.   :  79.83  
+                 (Other)              :45732                                     
+             CREATE_TIME_INCIDENT    INCIDENT_TYPE_DESC          NEIGHBORHOOD  
+ 01/15/2016 08:49:14 PM:    2     bulglar     : 6603    WESTWOOD       : 4159  
+ 01/15/2017 09:30:40 PM:    2     car_accident:17300    N/A            : 3646  
+ 02/26/2016 05:23:30 PM:    2     shooting    : 4717    EAST PRICE HILL: 2526  
+ 03/11/2015 04:26:09 PM:    2     theft_pro   :18440    WEST PRICE HILL: 2156  
+ 03/22/2016 04:01:12 PM:    2                           OVER-THE-RHINE : 2135  
+ 04/25/2016 06:46:06 PM:    2                           AVONDALE       : 2083  
+ (Other)               :47048                           (Other)        :30355  
+          STREET_SRCH             ARRIVAL_TIME_PRIMARY_UNIT             CLOSED_TIME_INCIDENT
+ GLENWAY AV     : 1269   02/20/2015 04:49:50 PM:    2       02/24/2015 04:22:52 PM:    2    
+ READING RD     : 1094   02/24/2015 08:15:51 AM:    2       03/19/2015 07:35:45 AM:    2    
+ VINE ST        : 1081   03/26/2016 04:28:37 AM:    2       04/03/2015 05:55:37 PM:    2    
+ MADISON RD     :  485   03/28/2015 07:58:43 PM:    2       04/18/2015 09:11:19 PM:    2    
+ WARSAW AV      :  472   04/09/2015 02:29:23 PM:    2       06/02/2015 04:11:09 PM:    2    
+ SPRING GROVE AV:  465   (Other)               :38033       (Other)               :46838    
+ (Other)        :42194   NA's                  : 9017       NA's                  :  212    
+          DISPATCH_TIME_PRIMARY_UNIT      date                          year     
+ 03/17/2015 12:37:55 PM:    2        Min.   :2015-01-01 00:01:45   Min.   :2015  
+ 03/20/2016 06:07:33 PM:    2        1st Qu.:2015-08-03 13:10:57   1st Qu.:2015  
+ 03/22/2016 07:00:30 PM:    2        Median :2016-03-02 15:46:24   Median :2016  
+ 06/02/2016 07:11:27 PM:    2        Mean   :2016-03-19 05:41:08   Mean   :2016  
+ 06/08/2017 12:31:37 PM:    2        3rd Qu.:2016-09-28 16:56:50   3rd Qu.:2016  
+ (Other)               :42094        Max.   :2017-10-17 00:27:55   Max.   :2017  
+ NA's                  : 4956                                                    
+     month             day       
+ Min.   : 1.000   Min.   : 1.00  
+ 1st Qu.: 4.000   1st Qu.: 8.00  
+ Median : 7.000   Median :16.00  
+ Mean   : 6.589   Mean   :15.58  
+ 3rd Qu.: 9.000   3rd Qu.:23.00  
+ Max.   :12.000   Max.   :31.00  
+                                 
+```{r}
 summary(fourtype_ymd$LATITUDE_X)
 summary(fourtype_ymd$LONGITUDE_X)
 quantile(fourtype_ymd$LATITUDE_X, c(.005, .57, .995)) 
-quantile(fourtype_ymd$LONGITUDE_X, c(.005, .57, .995)) 
+quantile(fourtype_ymd$LONGITUDE_X, c(.025, .57, .975)) 
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #  -25.29   39.11   39.14   39.11   39.16   47.71 
 #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -118,18 +162,16 @@ quantile(fourtype_ymd$LONGITUDE_X, c(.005, .57, .995))
 # -84.70742 -84.51188 -84.37261 
 ```
 ```{r}
-fourtype_ymd_995<-
+fourtype_ymd_cincin<-
   fourtype_ymd %>%
   arrange(LATITUDE_X,LONGITUDE_X)%>%
-  filter(LATITUDE_X > 39.06, LONGITUDE_X > -84.7) %>%
-  filter(LATITUDE_X < 39.28, LONGITUDE_X < -84.37) 
+  filter(LATITUDE_X > 39.088, LONGITUDE_X > -84.578) %>%
+  filter(LATITUDE_X < 39.165, LONGITUDE_X < -84.469) 
   
 ```
 ```{r}
-summary(fourtype_ymd_995$LATITUDE_X)
-summary(fourtype_ymd_995$LONGITUDE_X)
-#boxplot(fourtype_ymd_999$LATITUDE_X)
-#boxplot(fourtype_ymd_999$LONGITUDE_X)
+summary(fourtype_ymd_cincin$LATITUDE_X)
+summary(fourtype_ymd_cincin$LONGITUDE_X)
 ```
 ```{r}
 write.csv(fourtype_ymd_995, file = "fourtype_ymd_995.csv")
