@@ -1,0 +1,71 @@
+---
+title: "PDC_Xue"
+author: "XueRui"
+date: "October 26, 2017"
+output: pdf_document
+---
+```{r}
+main <- read.csv("main_with_date.csv")
+attach(main)
+```
+```{r}
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+library(magrittr)
+```
+```{r}
+names(main)
+```
+
+```{r}
+summary(main$INCIDENT_TYPE_ID)
+```
+Among all incident types included in the dataset, the top five most frequent incidents are "Cell" (314201), "SDET" (128196), "DIRPAT" (112702), "ADV" (100747), and "REPO" (68541). However, due to the size of the whole dataset and the wide variety of incident types, it is hard to discern real crimes, such as theft(12462) and assult (15681), from comparativley trivial events, such as patrol (112702) and investigations (63866). In fact, none of the top five incident types is directly related to a serious crime. If we want to model the crime distribution, we need to eliminate the non-crime incidents to bettern understand the crime rates.
+
+```{r}
+summary(main$NEIGHBORHOOD)
+```
+We also summarized the rate of incidents happening in all neighborhoods as well. According to the dataset, East Price Hill (409052) has the highest number of incidents, followed by Westwood(101324), downtown (82901), and Over-The-Rhine (66599). However, since the dataset did not include the neighborhood information for some incidents, we disregarded those cases.
+
+
+```{r}
+Lubriex <- 
+  main %>%
+  mutate(date = lubridate::mdy_hms(CREATE_TIME_INCIDENT)) %>%
+  mutate(time = lubridate::hour(date))
+View(Lubriex)
+```
+
+```{r}
+jan <- subset(Lubriex, month = 1)
+summary(jan)
+```
+
+```{r}
+summary(Lubriex$month)
+```
+
+Bar plot for incident type & frequency
+```{r}
+B = c(314201, 128196, 112702, 100747, 68541, 12462, 15681, 11450)
+barplot(B, main="Incident Type & Overall Amount", names.arg = c("CELL", "SDET", "DIRPAT", "ADV", "REPO",  "THEFT", "ASSLT", "SHOTS"), border = "red", xlab="Incident type", ylab="Incident amount")
+```
+
+Bar plot for neighborhood & Incidents
+```{r}
+C = c(409052, 101324, 82901, 71656, 66599)
+barplot(C, main="Neighborhood & Incident Amount", names.arg = c("ESTPRICE", "WESTWOOD", "DWTN", "AVONDALE", "OVER-RHINE"), border = "red", xlab="Neighborhood", ylab="Incident amount")
+```
+
+Line chart for month and freq
+```{r}
+mon = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+freq = c()
+mf=data.frame(mon, freq)
+plot(freq ~ mon, data=mf, xlab = "Month", ylab = "Incident frequency", main = "")
+```
+
+
+
+
