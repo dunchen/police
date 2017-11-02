@@ -27,7 +27,7 @@ test_ix=[0 for row in range(45000)]
 pred_loss =nn.MSELoss()
 stop_loss=nn.CrossEntropyLoss()
 
-fil=pd.read_csv('all_type_150_count_d_reg.csv')
+fil=pd.read_csv('./all_type_150_count/all_type_150_count_d_reg.csv')
 n=41582-2
 day=0
 temp_time=20141001
@@ -174,7 +174,7 @@ print(xt/test_num)
 
 
 print('*************************************************************')
-for i in range(500000):
+for i in range(100000):
 	t=random.randint(40,day)
 	if (test_ix[t]==0):
 		pred_optimizer.zero_grad()
@@ -202,5 +202,5 @@ print(xt/test_num)
 
 from time import gmtime,strftime
 p=gmtime()
-torch.save(model.state_dict(),'./tsavednet-dynamic-model-500000'+strftime("%Y-%m-%d %H:%M:%S", p))
-torch.save(ystop.state_dict(),'./tsavednet-dynamic-stopsign-500000'+strftime("%Y-%m-%d %H:%M:%S", p))
+torch.save(model.state_dict(),'./savednet-dynamic-model-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
+torch.save(ystop.state_dict(),'./savednet-dynamic-stopsign-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
