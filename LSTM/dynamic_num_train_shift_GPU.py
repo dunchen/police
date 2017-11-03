@@ -20,30 +20,32 @@ x_dim=150
 h_dim=150
 h2_dim=50
 h3_dim=25
-inputx=[[[0 for col in range(150)] for row in range(45000)] for shift in range(4)]
+inputx=[[[0 for shift in range(150)] for col in range(40000)] for row in range(4)]
 
 test_ix=[0 for row in range(45000)]
 
 pred_loss =nn.MSELoss()
 stop_loss=nn.CrossEntropyLoss()
 
-fil=pd.read_csv('./all_type_150_count/all_type_150_count_d_reg_shift.csv')
+fil=pd.read_csv('../all_type_150_count/all_type_150_count_d_reg_shift.csv')
 n=107669
 day=0
 temp_time=20141001
 for i in range(n):
         time=fil.ix[i,2].astype(int)
         if time!=temp_time:
+                if time==20141001:
+                        day=-1
                 day=day+1
                 temp_time=time
         reg=fil.ix[i,3]
-	shift=np.asscalar(fil.ix[i,1])
+        shift=(fil.ix[i,1]).astype(int)
         if not(pd.isnull(reg)):
                 reg2=reg.astype(int)
                 count=np.asscalar(fil.ix[i,4])
                 #print(mon-10,reg2,count)
-                if count<200:
-                        inputx[shift][day][reg2]=count/200
+                if count<100:
+                        inputx[shift][day][reg2]=count/100
                 else:
                         inputx[shift][day][reg2]=1
 inputx=Variable(torch.FloatTensor(inputx),requires_grad=False).cuda()
@@ -98,8 +100,8 @@ class Sequence(nn.Module):
         i=0
         y=torch.FloatTensor([[0,1]])   
         while i<30:
-            h_t, c_t = self.lstm(inputx[x-i-1].cuda(), (h_t, c_t))
-            temp_input=Variable(torch.cat((h_t,inputx[x-i-1].view(1,150)),1).data,requires_grad=False)
+            h_t, c_t = self.lstm(inputx[current_shift][x-i-1].cuda(), (h_t, c_t))
+            temp_input=Variable(torch.cat((h_t,inputx[current_shift][x-i-1].view(1,150)),1).data,requires_grad=False)
             y=ystop(temp_input)
             outputs = outputs+ [h_t]
             i=i+1
@@ -111,8 +113,8 @@ class Sequence(nn.Module):
 
 
         for j in range(min(10,x-i)):
-            h_t, c_t = self.lstm(inputx[x-i-1-j].cuda(), (h_t, c_t))
-            temp_input=Variable(torch.cat((h_t,inputx[x-i-1-j].view(1,150)),1).data,requires_grad=False).cuda()
+            h_t, c_t = self.lstm(inputx[current_shift][x-i-1-j].cuda(), (h_t, c_t))
+            temp_input=Variable(torch.cat((h_t,inputx[current_shift][x-i-1-j].view(1,150)),1).data,requires_grad=False).cuda()
             outputs=outputs+ [h_t]
         
         return outh,outputs,i+9
@@ -129,7 +131,7 @@ def trainstopsign(x,outputs,size,target):
     for i in range(size):
         #p1=Variable(torch.LongTensor([0]),requires_grad=False)
         #p2=Variable(torch.LongTensor([1]),requires_grad=False)
-        temp_input=Variable(torch.cat((outputs[i],inputx[x-i-1].view(1,150)),1).data,requires_grad=False).cuda()
+        temp_input=Variable(torch.cat((outputs[i],inputx[current_shift][x-i-1].view(1,150)),1).data,requires_grad=False).cuda()
         y=ystop(temp_input)
         if minx<i:
             loss=stop_loss(y,Variable(torch.LongTensor([1]),requires_grad=False).cuda())
@@ -152,56 +154,58 @@ def trainpred(out,target):
     return
 
 
-model=Sequence().cuda()
-ystop=stopsign().cuda()
-pred_optimizer=optim.SGD(model.parameters(),lr=0.5)
-stop_optimizer=optim.Adam(ystop.parameters(),lr=1e-3)
+current_shift=1
+while current_shift<4:
+	model=Sequence().cuda()
+	ystop=stopsign().cuda()
+	pred_optimizer=optim.SGD(model.parameters(),lr=0.5)
+	stop_optimizer=optim.Adam(ystop.parameters(),lr=1e-3)
+
+	xh,_,_=model(day-1)
+	x=pred_loss(xh,inputx[current_shift][day-1]).data[0]
+	for i in range(day-41):
+        	xh,_,_=model(i+40)
+        	x=x+pred_loss(xh,inputx[current_shift][i+40]).data[0]
+	print(x/(day-41))
+
+	xh,_,_=model(40)
+	xt=pred_loss(xh,inputx[current_shift][40]).data[0]
+	for i in range(day):
+        	if (test_ix[i]==1) and (i>40):
+                	xh,_,_=model(i)
+                	xt=xt+pred_loss(xh,inputx[current_shift][i]).data[0]
+	print(xt/test_num)
 
 
-xh,_,_=model(day-1)
-x=pred_loss(xh,inputx[day-1]).data[0]
-for i in range(day-41):
-        xh,_,_=model(i+40)
-        x=x+pred_loss(xh,inputx[i+40]).data[0]
-print(x/(day-41))
-
-xh,_,_=model(40)
-xt=pred_loss(xh,inputx[40]).data[0]
-for i in range(day):
-        if (test_ix[i]==1) and (i>40):
-                xh,_,_=model(i)
-                xt=xt+pred_loss(xh,inputx[i]).data[0]
-print(xt/test_num)
-
-
-print('*************************************************************')
-for i in range(100000):
-	t=random.randint(40,day)
-	if (test_ix[t]==0):
-		pred_optimizer.zero_grad()
-		stop_optimizer.zero_grad()
-		out,outs,size=model(t)
+	print('*************************************************************')
+	for i in range(100000):
+		t=random.randint(40,day)
+		if (test_ix[t]==0):
+			pred_optimizer.zero_grad()
+			stop_optimizer.zero_grad()
+			out,outs,size=model(t)
 		
-		trainstopsign(t,outs,size,inputx[t])
-		trainpred(out,inputx[t])
+			trainstopsign(t,outs,size,inputx[current_shift][t])
+			trainpred(out,inputx[current_shift][t])
 
 
-xh,_,_=model(day-1)
-x=pred_loss(xh,inputx[day-1]).data[0]
-for i in range(day-41):
-        xh,_,_=model(i+40)
-        x=x+pred_loss(xh,inputx[i+40]).data[0]
-print(x/(day-41))
+	xh,_,_=model(day-1)
+	x=pred_loss(xh,inputx[current_shift][day-1]).data[0]
+	for i in range(day-41):
+        	xh,_,_=model(i+40)
+        	x=x+pred_loss(xh,inputx[current_shift][i+40]).data[0]
+	print(x/(day-41))
 
-xh,_,_=model(40)
-xt=pred_loss(xh,inputx[40]).data[0]
-for i in range(day):
-        if (test_ix[i]==1) and (i>40):
-                xh,_,_=model(i)
-                xt=xt+pred_loss(xh,inputx[i]).data[0]
-print(xt/test_num)
+	xh,_,_=model(40)
+	xt=pred_loss(xh,inputx[current_shift][40]).data[0]
+	for i in range(day):
+        	if (test_ix[i]==1) and (i>40):
+                	xh,_,_=model(i)
+                	xt=xt+pred_loss(xh,inputx[current_shift][i]).data[0]
+	print(xt/test_num)
 
-from time import gmtime,strftime
-p=gmtime()
-torch.save(model.state_dict(),'./savednet-dynamic-model-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
-torch.save(ystop.state_dict(),'./savednet-dynamic-stopsign-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
+	from time import gmtime,strftime
+	p=gmtime()
+	torch.save(model.state_dict(),'./savednet-dynamic-model-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
+	torch.save(ystop.state_dict(),'./savednet-dynamic-stopsign-100000'+strftime("%Y-%m-%d %H:%M:%S", p))
+	current_shift=current_shift+1
