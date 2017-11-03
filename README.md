@@ -50,6 +50,11 @@ predict the patrol route
 
 
 # 11.01 17:23 edit
+
+Title
+
+==> 1 ppt
+
 我们的故事中需要涉及／圆回来的问题：
 
 ### 1. 背景介绍
@@ -59,9 +64,13 @@ predict the patrol route
 
 eg. fact statement: patrol time是什么，我们怎么用的
 
+==> 1 ppt
+
 ### 2. 展示data
 2.1 bar plot/ histogram: x-axis是所有的（？）incident type, y-axis是dataset种的个数／count，图里面可以按照数目多少把案件类型从大到小排序。
 －>说明有些type发生得更frequently。
+
+==> 1 ppt ~ Ruotong Wang
 
 2.2 Three pairs of maps：
 
@@ -71,10 +80,13 @@ eg. fact statement: patrol time是什么，我们怎么用的
   
   (c) Different time of the day, same date, same location (same as above: can use 3 colors for 3 shifts)
 
+
 2.3 从上面3个图我们可以看到，
 time of the day matters, (///但是这个的预测我们没有办法做到精确，只能用shifts代替；所以这里的time of the day我们实际上指的是different shifts?)
 date matters, 
 region matters, in terms of the number of incidents
+
+==> 1 ppt
 
 ### 3. 我们对这个情况的分析
 3.1 我们的（假设）／分析：一个police officer wants to get to the place where crime incidents occur as fast as possible / wants to cover as many of cases in which his or her presence could help, so that the problems could be solved more efficiently.
@@ -89,6 +101,8 @@ Thus, the police might have trouble deciding where to patrol during his or her s
 -> we select some of the incident types for which a shorter time that police officers take to be present on the sites is important / has an influence on the resolutions of the problems. 
 Thus, we focus on 4 types: car_accident .etc
 + 最好可以draw connection, 说一下这几个案件也是发生非常频繁, and constitute a significant part of a police's job.
+
+==> 1 ppt
 
 ### 4. 数据分析
 4.1 Poisson model 
@@ -108,6 +122,8 @@ Thus, we focus on 4 types: car_accident .etc
 
 (c) look at the R^2 or some other measurement to show how well the model captures the variations in data.
 
+==> max 2 ppt; if it doesn't work 1 ppt
+
 4.2 LSTM
 
 4.2.1 LSTM的介绍：是什么
@@ -126,5 +142,7 @@ eg. 是动态的，自动学习，所以可以规避xxxyyyzzz Poisson capture不
 eg. 不同的date预测结果不一样
 
 eg. 不assume independence
+
+==> max 4 ppt
 
 ### 5. 所以我们的结果非常好非常厉害
