@@ -24,7 +24,7 @@ pred_loss =nn.MSELoss()
 stop_loss=nn.CrossEntropyLoss()
 
 
-fil=pd.read_csv('all_type_150_count_d_reg.csv')
+fil=pd.read_csv('../all_type_150_count/all_type_150_count_d_reg.csv')
 n=41582-2
 day=0
 temp_time=20141001
