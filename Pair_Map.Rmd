@@ -1,0 +1,67 @@
+---
+title: "Pairs_Maps"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(ggmap)
+library(maps)
+library(mapdata)
+library(readr)
+library(dplyr)
+```
+
+```{r}
+four_type_150_dmy_shift_downtown<-
+  four_type_150_dmy_shift %>%
+  arrange(LATITUDE_X,LONGITUDE_X)%>%
+  filter(LATITUDE_X > 39.08811, LONGITUDE_X > -84.57798) %>%
+  filter(LATITUDE_X < 39.16499, LONGITUDE_X < -84.46901)  %>%
+  mutate(date=
+           lubridate::mdy_hms(CREATE_TIME_INCIDENT))%>%
+  mutate(day=
+           lubridate::day(date))%>%
+  mutate(color = ifelse(INCIDENT_TYPE_DESC == "bulglar", "brown",
+                        ifelse(INCIDENT_TYPE_DESC == "car_accident", "blue",
+                               ifelse(INCIDENT_TYPE_DESC == "shooting", "orange",
+                                      ifelse(INCIDENT_TYPE_DESC == "theft_pro", "cadetblue3", "NA"))))) 
+```
+
+```{r}
+four_type_150_dmy_shift_downtown_day <-
+  four_type_150_dmy_shift_downtown %>%
+  filter(year == "2015" & month == "10")
+#View(four_type_150_dmy_shift_downtown_day)
+```
+
+```{r}
+table(four_type_150_dmy_shift_downtown_day$color)
+```
+
+```{r}
+cbbox<- make_bbox(lat = four_type_150_dmy_shift_downtown_day$LATITUDE_X, lon = four_type_150_dmy_shift_downtown_day$LONGITUDE_X, f = .1)
+cbbox
+downtown_map <- get_map(location = cbbox, maptype = "roadmap", source = "google", zoom=13)
+ggmap(downtown_map) + geom_point(data = four_type_150_dmy_shift_downtown_day, mapping = aes(x = LONGITUDE_X, y = LATITUDE_X), color = four_type_150_dmy_shift_downtown_day$color) + ggtitle("Crime Incidents in Oct 2015")+ scale_fill_manual(values=c("brown", "blue", "organge","cadetblue3"), 
+                       name="Four Major Incident Types",
+                       breaks=c("bulglar", "car_accident", "shooting", "theft_pro"),
+                       labels=c("Bulglar", "Car Accident", "Shooting", "Theft"))
+```
+
+```{r}
+four_type_150_dmy_shift_downtown_shift <-
+  four_type_150_dmy_shift_downtown %>%
+  filter(year == "2017" & month == "10" )%>%
+  mutate(shift_color = ifelse(shift == "1", "seagreen3",
+                        ifelse(shift == "2", "orchid3", 
+                               ifelse(shift == "3", "brown","NA"))))
+#View(four_type_150_dmy_shift_downtown_day)
+```
+
+```{r}
+cbbox<- make_bbox(lat = four_type_150_dmy_shift_downtown_shift$LATITUDE_X, lon = four_type_150_dmy_shift_downtown_shift$LONGITUDE_X, f = .1)
+cbbox
+downtown_map <- get_map(location = cbbox, maptype = "roadmap", source = "google", zoom=13)
+ggmap(downtown_map) + geom_point(data = four_type_150_dmy_shift_downtown_shift, mapping = aes(x = LONGITUDE_X, y = LATITUDE_X), color = four_type_150_dmy_shift_downtown_shift$shift_color) + ggtitle("Crime Incidents in Oct 2017 by Shift")
+```
