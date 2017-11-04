@@ -10,6 +10,7 @@ library(maps)
 library(mapdata)
 library(readr)
 library(dplyr)
+library(RColorBrewer)
 ```
 
 ```{r}
@@ -64,4 +65,33 @@ cbbox<- make_bbox(lat = four_type_150_dmy_shift_downtown_shift$LATITUDE_X, lon =
 cbbox
 downtown_map <- get_map(location = cbbox, maptype = "roadmap", source = "google", zoom=13)
 ggmap(downtown_map) + geom_point(data = four_type_150_dmy_shift_downtown_shift, mapping = aes(x = LONGITUDE_X, y = LATITUDE_X), color = four_type_150_dmy_shift_downtown_shift$shift_color) + ggtitle("Crime Incidents in Oct 2017 by Shift")
+```
+```{r}
+cbbox<- make_bbox(lat = four_type_150_dmy_shift_downtown_day$LATITUDE_X, lon = four_type_150_dmy_shift_downtown_day$LONGITUDE_X, f = .1)
+cbbox
+downtown_map <- get_map(location = cbbox, maptype = "roadmap", source = "google", zoom=13)
+ggmap(downtown_map) + geom_tile(data = loc_mean, aes(x = loc_mean$long_mean, y = loc_mean$la_mean, alpha = loc_mean$pred_shift3), fill = 'red') + theme(axis.title.y = element_blank(), axis.title.x = element_blank())
+```
+
+```{r}
+names(loc_mean)
+```
+
+
+
+```{r}
+names(loc_mean)[18] <- "pred_shift3"
+names(loc_mean)[20] <- "pred_shift2"
+
+```
+
+```{r}
+loc_mean <- loc_mean %>%
+  filter(pred_shift3 > 0) %>% filter(la_mean > 39.08811, long_mean > -84.57798) %>%
+  filter(la_mean < 39.16499, long_mean < -84.46901)  %>%
+cbbox<- make_bbox(lat = four_type_150_dmy_shift_downtown_day$LATITUDE_X, lon = four_type_150_dmy_shift_downtown_day$LONGITUDE_X, f = .1)
+cbbox
+downtown_map <- get_map(location = cbbox, maptype = "roadmap", source = "google", zoom=13)
+ggmap(downtown_map) + stat_density2d(data=loc_mean, aes(x = loc_mean$long_mean, y = loc_mean$la_mean, alpha = loc_mean$pred_shift3), geom="polygon", size=0.01, bins=16) +
+  scale_fill_gradient(low="red", high="green")
 ```
